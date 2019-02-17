@@ -8,9 +8,13 @@ class Ssense(scrapy.Spider):
 	name = "my_scraper"
 
 	# First Start Url
-	start_urls = ["https://www.ssense.com/en-gb/men/designers/raf-simons", "https://www.ssense.com/en-gb/men/designers/undercover"]
+	start_urls = ["https://www.ssense.com/en-gb/men/designers/raf-simons", "https://www.ssense.com/en-gb/men/designers/undercover", "https://www.ssense.com/en-gb/men/designers/ambush", "https://www.ssense.com/en-gb/men/designers/balenciaga"]
 
-	
+	def next_page(self,response):
+		for href in response.xpath("//a[cotains(@class, 'router-link-active')//@href"):
+			url = "https://ssense.com" + href.extract()
+			yield scrapy.Request(url, callback=self.parse)
+
 	
 	def parse(self, response):
 		for href in response.xpath("//figure[contains(@class, 'browsing-product-item')]/a//@href"):

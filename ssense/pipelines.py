@@ -31,8 +31,13 @@ class SsensePipeline(object):
         self.client.close()
 
     def process_item(self, item, spider):
-        self.db[self.collection_name].insert_one(dict(item))
+        for data in item:
+            if not data:
+                raise DropItem("Missing data!")
+        self.db[self.collection_name].update({'url': item['url']}, dict(item), upsert=True)
         logging.debug("Product added to MongoDB")
         return item
+
+
 
 
